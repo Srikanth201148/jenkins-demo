@@ -1,18 +1,40 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven-3.9'
+        jdk 'JDK-17'
+    }
+
     stages {
 
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo "Building project from Jenkinsfile..."
-                bat "dir"
+                checkout scm
             }
         }
 
-        stage('Create Artifact') {
+        stage('Build') {
             steps {
-                bat "echo Build from Jenkinsfile > build.txt"
+                bat 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
     }
