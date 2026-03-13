@@ -37,5 +37,12 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
+        stage('Deploy') {
+            steps {
+                bat 'java -jar target\\demo-app-1.0.jar'
+            }
+        }
+
     }
 }
